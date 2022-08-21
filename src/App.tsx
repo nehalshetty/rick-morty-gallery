@@ -4,13 +4,14 @@ import "./App.css";
 import CharacterCard from "./components/CharacterCard";
 import styled from "styled-components";
 import { CharacterBasicInfo, CharactersResp, CharLocation } from "./types/character";
-import { Box, Modal } from "@mui/material";
+import { Box, Modal, Skeleton } from "@mui/material";
 
 import CharDetailsModal from "./components/CharDetailsModal";
 import { getLocation } from "./apis/getLocation";
 import { LocationStateInterface } from "./types/location";
 import InfiniteScroll from "./components/InfiniteScroll";
 import { extractURLRightVal } from "./utils/extractURLRight";
+import LoadingBoxes from "./components/LoadingBoxes";
 
 const MainSection = styled.div`
     padding: 20px;
@@ -42,7 +43,10 @@ const App = () => {
     const [nextPage, setNextPage] = useState<string>("");
     const [featuredChapters, setFeaturedChapters] = useState<string[]>([]);
 
+    const [isCharacterLoading, setIsCharacterLoading] = useState(true);
+
     const getCharacters = async (nextPage?: string) => {
+        setIsCharacterLoading(true);
         const resp: CharactersResp = await axios.get(
             nextPage || "https://rickandmortyapi.com/api/character"
         );
@@ -52,6 +56,7 @@ const App = () => {
 
             setCharacters([...oldData, ...resp.data.results]);
             setNextPage(resp.data.info.next);
+            setIsCharacterLoading(false);
         }
     };
 
@@ -116,13 +121,14 @@ const App = () => {
     return (
         <MainSection className="App">
             <InfiniteScroll
-                isObserving={nextPage ? true : false}
+                isObserving={nextPage && !isCharacterLoading ? true : false}
                 handleInfiniteScroll={getCharacters}
                 nextPage={nextPage}>
                 {characters.map((val) => (
                     <CharacterCard handleClick={handleKnowMoreClick} key={val.id} basicInfo={val} />
                 ))}
             </InfiniteScroll>
+            {isCharacterLoading && <LoadingBoxes />}
 
             <Modal open={showModal} onClose={handleModalClose}>
                 <Box>
