@@ -4,7 +4,7 @@ import "./App.css";
 import CharacterCard from "./components/CharacterCard";
 import styled from "styled-components";
 import { CharacterBasicInfo, CharactersResp, CharLocation } from "./types/character";
-import { Box, Modal, Skeleton } from "@mui/material";
+import { Box, Modal, Skeleton, Typography } from "@mui/material";
 
 import CharDetailsModal from "./components/CharDetailsModal";
 import { getLocation } from "./apis/getLocation";
@@ -12,6 +12,7 @@ import { LocationStateInterface } from "./types/location";
 import InfiniteScroll from "./components/InfiniteScroll";
 import { extractURLRightVal } from "./utils/extractURLRight";
 import LoadingBoxes from "./components/LoadingBoxes";
+import MortyOutlined from "./assets/MortyIconOutlined";
 
 const MainSection = styled.div`
     padding: 20px;
@@ -31,6 +32,12 @@ const locationDefault: LocationStateInterface = {
     dimension: "",
     isLoaded: false
 };
+
+const MainHeader = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+`;
 
 const App = () => {
     const [characters, setCharacters] = useState<CharacterBasicInfo[]>([]);
@@ -119,27 +126,41 @@ const App = () => {
     };
 
     return (
-        <MainSection className="App">
-            <InfiniteScroll
-                isObserving={nextPage && !isCharacterLoading ? true : false}
-                handleInfiniteScroll={getCharacters}
-                nextPage={nextPage}>
-                {characters.map((val) => (
-                    <CharacterCard handleClick={handleKnowMoreClick} key={val.id} basicInfo={val} />
-                ))}
-            </InfiniteScroll>
-            {isCharacterLoading && <LoadingBoxes />}
+        <>
+            <MainHeader>
+                <MortyOutlined size={80} />
 
-            <Modal open={showModal} onClose={handleModalClose}>
-                <Box>
-                    <CharDetailsModal
-                        chaptersFeatured={featuredChapters}
-                        origin={origin}
-                        location={location}
-                    />
-                </Box>
-            </Modal>
-        </MainSection>
+                <Typography component={"span"} variant="h4">
+                    Rick Verse Gallery 🔥
+                </Typography>
+            </MainHeader>
+
+            <MainSection className="App">
+                <InfiniteScroll
+                    isObserving={nextPage && !isCharacterLoading ? true : false}
+                    handleInfiniteScroll={getCharacters}
+                    nextPage={nextPage}>
+                    {characters.map((val) => (
+                        <CharacterCard
+                            handleClick={handleKnowMoreClick}
+                            key={val.id}
+                            basicInfo={val}
+                        />
+                    ))}
+                </InfiniteScroll>
+                {isCharacterLoading && <LoadingBoxes />}
+
+                <Modal open={showModal} onClose={handleModalClose}>
+                    <Box>
+                        <CharDetailsModal
+                            chaptersFeatured={featuredChapters}
+                            origin={origin}
+                            location={location}
+                        />
+                    </Box>
+                </Modal>
+            </MainSection>
+        </>
     );
 };
 
