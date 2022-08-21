@@ -6,6 +6,7 @@ import { LocationStateInterface } from "../types/location";
 interface CharDetailsModalProps {
     origin: LocationStateInterface;
     location: LocationStateInterface;
+    chaptersFeatured: string[];
 }
 
 const Main = styled.div`
@@ -22,6 +23,7 @@ const Main = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    border-radius: 16px;
 `;
 
 const ModalTitle = styled(Typography)`
@@ -36,7 +38,16 @@ const Section = styled.div`
     min-width: 230px;
 `;
 
-const CharDetailsModal: FunctionComponent<CharDetailsModalProps> = ({ origin, location }) => {
+const ChaptersSection = styled.div`
+    width: 100%;
+    margin-top: 20px;
+`;
+
+const CharDetailsModal: FunctionComponent<CharDetailsModalProps> = ({
+    origin,
+    location,
+    chaptersFeatured
+}) => {
     return (
         <Main>
             <Section>
@@ -86,6 +97,25 @@ const CharDetailsModal: FunctionComponent<CharDetailsModalProps> = ({ origin, lo
                     "Unknown"
                 )}
             </Section>
+
+            <ChaptersSection>
+                <Typography
+                    variant="h4"
+                    textAlign="center"
+                    style={{ margin: "10px 0" }}
+                    component="div">
+                    Chapters
+                </Typography>
+
+                <Typography variant="subtitle1" style={{ margin: "10px 10px" }} component="p">
+                    {chaptersFeatured.map(
+                        (val, i) =>
+                            `${val}${i < chaptersFeatured.length - 2 ? ", " : ""}${
+                                i === chaptersFeatured.length - 2 ? " and " : ""
+                            }`
+                    )}
+                </Typography>
+            </ChaptersSection>
         </Main>
     );
 };

@@ -21,6 +21,7 @@ const MainSection = styled.div`
 interface UrlsParameter {
     origin: string;
     location: string;
+    episode: string[];
 }
 
 const locationDefault: LocationStateInterface = {
@@ -39,6 +40,7 @@ const App = () => {
     const [origin, setOrigin] = useState(locationDefault);
     const [location, setLocation] = useState(locationDefault);
     const [nextPage, setNextPage] = useState<string>("");
+    const [featuredChapters, setFeaturedChapters] = useState<string[]>([]);
 
     const getCharacters = async (nextPage?: string) => {
         const resp: CharactersResp = await axios.get(
@@ -49,7 +51,6 @@ const App = () => {
             const oldData = JSON.parse(JSON.stringify(characters));
 
             setCharacters([...oldData, ...resp.data.results]);
-            // setCharacters(resp.data.results);
             setNextPage(resp.data.info.next);
         }
     };
@@ -93,17 +94,23 @@ const App = () => {
         return updatedLoc;
     };
 
-    const handleKnowMoreClick = async ({ origin, location }: UrlsParameter) => {
+    const handleKnowMoreClick = async ({ origin, location, episode }: UrlsParameter) => {
         const updatedLoc = await returnLocationData(origin);
         const updatedOrg = await returnLocationData(location);
 
         setShowModal(true);
         setOrigin(updatedOrg);
         setLocation(updatedLoc);
+        setFeaturedChapters(
+            episode.map((val) => extractURLRightVal({ url: val, txt: "episode/" }))
+        );
     };
 
     const handleModalClose = () => {
         setShowModal(false);
+        setOrigin(locationDefault);
+        setLocation(locationDefault);
+        setFeaturedChapters([]);
     };
 
     return (
@@ -119,7 +126,11 @@ const App = () => {
 
             <Modal open={showModal} onClose={handleModalClose}>
                 <Box>
-                    <CharDetailsModal origin={origin} location={location} />
+                    <CharDetailsModal
+                        chaptersFeatured={featuredChapters}
+                        origin={origin}
+                        location={location}
+                    />
                 </Box>
             </Modal>
         </MainSection>
