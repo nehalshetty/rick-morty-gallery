@@ -10,6 +10,7 @@ import CharDetailsModal from "./components/CharDetailsModal";
 import { getLocation } from "./apis/getLocation";
 import { LocationStateInterface } from "./types/location";
 import InfiniteScroll from "./components/InfiniteScroll";
+import { extractURLRightVal } from "./utils/extractURLRight";
 
 const MainSection = styled.div`
     padding: 20px;
@@ -31,7 +32,8 @@ const locationDefault: LocationStateInterface = {
 
 const App = () => {
     const [characters, setCharacters] = useState<CharacterBasicInfo[]>([]);
-    // const [locations, setLocations] = useState<{ [key: string]: CharLocation }>({});
+    // Optimization: Store the data for already fetched locations
+    const [locations, setLocations] = useState<{ [key: string]: LocationStateInterface }>({});
     const [showModal, setShowModal] = useState(false);
     // TODO: Use isLoaded state to show loader for each data
     const [origin, setOrigin] = useState(locationDefault);
@@ -60,6 +62,16 @@ const App = () => {
     const returnLocationData = async (loc: string): Promise<LocationStateInterface> => {
         let updatedLoc = { ...locationDefault };
 
+        if (!loc) {
+            return updatedLoc;
+        }
+
+        // Optimization: Store the data for already fetched locations
+        const extractId = extractURLRightVal({ url: loc, txt: "location/" });
+        if (locations[extractId]) {
+            return locations[extractId];
+        }
+
         if (loc) {
             const resp = await getLocation(loc);
 
@@ -73,9 +85,9 @@ const App = () => {
                     isLoaded: true,
                     isKnown: true
                 };
+
+                setLocations({ ...locations, [resp.data.id]: updatedLoc });
             }
-        } else {
-            updatedLoc.isKnown = false;
         }
 
         return updatedLoc;
