@@ -42,6 +42,7 @@ const CharacterCard: FunctionComponent<CharacterCardProps> = ({ basicInfo }) => 
         <Typography textAlign="left" gutterBottom variant="h5" component="div">
           {basicInfo.name}
         </Typography>
+
         <Typography
           textAlign="left"
           color="text.secondary"
