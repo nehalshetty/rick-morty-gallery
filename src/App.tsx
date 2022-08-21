@@ -4,7 +4,7 @@ import "./App.css";
 import CharacterCard from "./components/CharacterCard";
 import styled from "styled-components";
 import { CharacterBasicInfo, CharactersResp, CharLocation } from "./types/character";
-import { Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 
 import CharDetailsModal from "./components/CharDetailsModal";
 import { getLocation } from "./apis/getLocation";
@@ -53,13 +53,13 @@ const App = () => {
     };
 
     useEffect(() => {
-        console.log("UEF");
-
+        // First call to get characters
         getCharacters();
     }, []);
 
     const returnLocationData = async (loc: string): Promise<LocationStateInterface> => {
         let updatedLoc = { ...locationDefault };
+
         if (loc) {
             const resp = await getLocation(loc);
 
@@ -106,7 +106,9 @@ const App = () => {
             </InfiniteScroll>
 
             <Modal open={showModal} onClose={handleModalClose}>
-                <CharDetailsModal origin={origin} location={location} />
+                <Box>
+                    <CharDetailsModal origin={origin} location={location} />
+                </Box>
             </Modal>
         </MainSection>
     );

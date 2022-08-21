@@ -39,7 +39,7 @@ const Section = styled.div`
 const CharDetailsModal: FunctionComponent<CharDetailsModalProps> = ({ origin, location }) => {
     return (
         <Main>
-            <Section key={"origin"}>
+            <Section>
                 <ModalTitle variant="h4" style={{ margin: "10px 0" }}>
                     Origin
                 </ModalTitle>
@@ -63,7 +63,7 @@ const CharDetailsModal: FunctionComponent<CharDetailsModalProps> = ({ origin, lo
                 )}
             </Section>
 
-            <Section key={"origin"}>
+            <Section>
                 <ModalTitle variant="h4" style={{ margin: "10px 0" }}>
                     Location
                 </ModalTitle>
