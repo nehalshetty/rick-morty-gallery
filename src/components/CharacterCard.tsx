@@ -5,6 +5,7 @@ import { CharacterBasicInfo } from '../types/character';
 
 interface CharacterCardProps {
   basicInfo: CharacterBasicInfo;
+  handleClick: ({ origin, location }: { origin: string; location: string }) => void;
 }
 
 const CharacterCardMain = styled(Card)`
@@ -33,7 +34,7 @@ const CardContentCustom = styled(CardContent)`
   padding-left: 5px;
 `;
 
-const CharacterCard: FunctionComponent<CharacterCardProps> = ({ basicInfo }) => {
+const CharacterCard: FunctionComponent<CharacterCardProps> = ({ basicInfo, handleClick }) => {
   return (
     <CharacterCardMain>
       <CardImg image={basicInfo.image} />
@@ -54,7 +55,13 @@ const CharacterCard: FunctionComponent<CharacterCardProps> = ({ basicInfo }) => 
       </CardContentCustom>
 
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button
+          onClick={() =>
+            handleClick({ origin: basicInfo.origin.url, location: basicInfo.location.url })
+          }
+          size="small">
+          Learn More
+        </Button>
       </CardActions>
     </CharacterCardMain>
   );
