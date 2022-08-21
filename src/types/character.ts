@@ -16,6 +16,11 @@ export interface CharactersResp {
   status: number;
   data: {
     results: CharacterBasicInfo[];
+    info: {
+      count: number,
+      next: string;
+      pages: number
+    }
   } | null;
 }
 

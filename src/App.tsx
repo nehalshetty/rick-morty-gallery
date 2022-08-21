@@ -9,6 +9,7 @@ import { Modal } from "@mui/material";
 import CharDetailsModal from "./components/CharDetailsModal";
 import { getLocation } from "./apis/getLocation";
 import { LocationStateInterface } from "./types/location";
+import InfiniteScroll from "./components/InfiniteScroll";
 
 const MainSection = styled.div`
     padding: 20px;
@@ -35,14 +36,20 @@ const App = () => {
     // TODO: Use isLoaded state to show loader for each data
     const [origin, setOrigin] = useState(locationDefault);
     const [location, setLocation] = useState(locationDefault);
+    const [nextPage, setNextPage] = useState<string>();
 
-    const getCharacters = async () => {
-        const resp: CharactersResp = await axios.get("https://rickandmortyapi.com/api/character");
+    const getCharacters = async (nextPage?: string) => {
+        const resp: CharactersResp = await axios.get(
+            nextPage || "https://rickandmortyapi.com/api/character"
+        );
+
+        console.log(nextPage);
 
         if (resp.status === 200 && resp.data) {
-            setCharacters(resp.data.results);
+            // setCharacters((prev) => [...prev, ...resp.data.results]);
+            setCharacters([...resp.data.results]);
+            setNextPage(resp.data.info.next);
         }
-        console.log({ resp });
     };
 
     useEffect(() => {
@@ -87,9 +94,14 @@ const App = () => {
 
     return (
         <MainSection className="App">
-            {characters.map((val) => (
-                <CharacterCard handleClick={handleKnowMoreClick} key={val.id} basicInfo={val} />
-            ))}
+            <InfiniteScroll
+                isObserving={nextPage ? true : false}
+                handleInfiniteScroll={getCharacters}
+                nextPage={nextPage}>
+                {characters.map((val) => (
+                    <CharacterCard handleClick={handleKnowMoreClick} key={val.id} basicInfo={val} />
+                ))}
+            </InfiniteScroll>
 
             <Modal open={showModal} onClose={handleModalClose}>
                 <CharDetailsModal origin={origin} location={location} />
