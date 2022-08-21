@@ -42,6 +42,12 @@ const CardContentCustom = styled(CardContent)`
     padding-left: 5px;
 `;
 
+enum CharStatus {
+    ALIVE = "Alive",
+    DEAD = "Dead",
+    UNKNOWN = "unknown"
+}
+
 const CharacterCard: FunctionComponent<CharacterCardProps> = ({ basicInfo, handleClick }) => {
     return (
         <CharacterCardMain>
@@ -58,7 +64,21 @@ const CharacterCard: FunctionComponent<CharacterCardProps> = ({ basicInfo, handl
                     gutterBottom
                     variant="subtitle2"
                     component="div">
-                    {basicInfo.gender} | {basicInfo.species} | {basicInfo.status}
+                    {basicInfo.gender} | {basicInfo.species} |
+                    <Typography
+                        textAlign="left"
+                        style={{
+                            color: `${basicInfo.status === CharStatus.ALIVE ? "green" : ""} 
+                            ${basicInfo.status === CharStatus.DEAD ? "red" : ""}
+                            ${basicInfo.status === CharStatus.UNKNOWN ? "orange" : ""}
+                            `
+                        }}
+                        gutterBottom
+                        variant="subtitle2"
+                        component="span">
+                        {" "}
+                        {basicInfo.status}
+                    </Typography>
                 </Typography>
             </CardContentCustom>
 
