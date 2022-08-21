@@ -48,7 +48,7 @@ const InfiniteScroll: React.FC<PropsWithChildren<InfiniteScrollProps>> = ({
             observer.unobserve(loaderRef.current);
         }
 
-        console.log(nextPage);
+        console.log({ nextPage, isObserving });
     }, [handleObserver, isObserving, nextPage]);
 
     return (

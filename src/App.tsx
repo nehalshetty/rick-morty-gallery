@@ -36,23 +36,25 @@ const App = () => {
     // TODO: Use isLoaded state to show loader for each data
     const [origin, setOrigin] = useState(locationDefault);
     const [location, setLocation] = useState(locationDefault);
-    const [nextPage, setNextPage] = useState<string>();
+    const [nextPage, setNextPage] = useState<string>("");
 
     const getCharacters = async (nextPage?: string) => {
         const resp: CharactersResp = await axios.get(
             nextPage || "https://rickandmortyapi.com/api/character"
         );
 
-        console.log(nextPage);
-
         if (resp.status === 200 && resp.data) {
-            // setCharacters((prev) => [...prev, ...resp.data.results]);
-            setCharacters([...resp.data.results]);
+            const oldData = JSON.parse(JSON.stringify(characters));
+
+            setCharacters([...oldData, ...resp.data.results]);
+            // setCharacters(resp.data.results);
             setNextPage(resp.data.info.next);
         }
     };
 
     useEffect(() => {
+        console.log("UEF");
+
         getCharacters();
     }, []);
 
